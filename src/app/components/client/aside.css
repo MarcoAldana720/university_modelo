@@ -1,0 +1,7 @@
+.aside::-webkit-scrollbar {
+    display: none; /* Ocultar la barra de desplazamiento en WebKit (Chrome, Safari) */
+}
+
+.aside__nav{
+    height: calc(100% - 80px);
+}
