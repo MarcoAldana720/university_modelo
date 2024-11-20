@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import axios from 'axios';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 export default function ExportInfo({ userId }) {
     const [userData, setUserData] = useState(null);
@@ -38,7 +38,8 @@ export default function ExportInfo({ userId }) {
         const body = [
             ['Id', userData.us_id],
             ['Nombres', userData.us_nombres],
-            ['Apellidos', userData.us_apellidos],
+            ['Apellido Paterno', userData.us_apellido_paterno],
+            ['Apellido Materno', userData.us_apellido_materno],
             ['Rol', userData.rol_descripcion],
             ['Estado', userData.es_descripcion],
         ];

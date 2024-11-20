@@ -12,12 +12,13 @@ export default function Fila({usuarios}) {
 
   return (
     <tr key={usuarios.us_id} onClick={() => redireccion(usuarios.us_id)}>
-      <td data-titulo="Nombre(S):">{usuarios.us_nombres}</td>
-      <td data-titulo="Apellido(S):">{usuarios.us_apellidos}</td>
-      <td data-titulo="Género:">{usuarios.gen_descripcion}</td>
-      <td data-titulo="Cargo:">{usuarios.rol_descripcion}</td>
-      <td data-titulo="Escuela:">{usuarios.esc_descripcion}</td>
-      <td data-titulo="Estado:">{usuarios.es_descripcion}</td>
+      <td data-titulo="nombre(S):">{usuarios.us_nombres}</td>
+      <td data-titulo="apellido paterno:">{usuarios.us_apellido_paterno}</td>
+      <td data-titulo="apellido materno:">{usuarios.us_apellido_materno}</td>
+      <td data-titulo="género:">{usuarios.gen_descripcion}</td>
+      <td data-titulo="cargo:">{usuarios.rol_descripcion}</td>
+      <td data-titulo="escuela:">{usuarios.esc_descripcion}</td>
+      <td data-titulo="estado:">{usuarios.es_descripcion}</td>
     </tr>
   )
 }

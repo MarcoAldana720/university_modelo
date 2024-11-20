@@ -25,9 +25,9 @@ export async function GET(request) {
     const [userResult] = await conn.query(`
       SELECT
         usuarios.us_nombres,
-        usuarios.us_apellidos,
+        usuarios.us_apellido_paterno,
+        usuarios.us_apellido_materno,
         usuarios.us_usuario,
-        usuarios.us_correo,
         roles.rol_id,
         roles.rol_descripcion
       FROM
@@ -86,13 +86,13 @@ export async function PUT(request) {
     await conn.query(`
       UPDATE usuarios SET
         us_nombres = ?,
-        us_apellidos = ?,
+        us_apellido_paterno = ?,
+        us_apellido_materno = ?,
         us_usuario = ?,
-        us_correo = ?,
         us_contrasena = IF(?, ?, us_contrasena)
       WHERE
         us_usuario = ?
-    `, [data.us_nombres, data.us_apellidos, data.us_usuario, data.us_correo, updatedPassword ? 1 : 0, updatedPassword, username]);
+    `, [data.us_nombres, data.us_apellido_paterno, data.us_apellido_materno, data.us_usuario, updatedPassword ? 1 : 0, updatedPassword, username]);
 
     const newToken = jwt.sign(
       {

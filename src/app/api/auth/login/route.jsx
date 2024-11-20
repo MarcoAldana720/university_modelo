@@ -14,6 +14,7 @@ export async function POST(request) {
     // Consulta a la base de datos para verificar el usuario y obtener la descripción del rol
     const [userResult] = await conn.query(`
       SELECT
+        usuarios.us_id,
         usuarios.us_usuario,
         usuarios.us_contrasena,
         roles.rol_id,
@@ -51,6 +52,7 @@ export async function POST(request) {
     const token = jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // Token válido por 30 días
+        id: user.us_id,
         username: user.us_usuario, // Incluye el nombre de usuario en el payload
         role: {
           id: user.rol_id, // Incluye el ID del rol

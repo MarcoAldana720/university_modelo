@@ -38,12 +38,18 @@ export default function NewUser({show}) {
         </button><br />
 
         <div className="form">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} method="post">
             <label htmlFor="us_nombres">nombre(s):</label><br />
             <input type="text" name="us_nombres" id="us_nombres" required/><br />
 
-            <label htmlFor="us_apellidos">apellido(s):</label><br />
-            <input type="text" name="us_apellidos" id="us_apellidos" required/><br />
+            <label htmlFor="us_apellido_paterno">apellido paterno:</label><br />
+            <input type="text" name="us_apellido_paterno" id="us_apellido_paterno" required/><br />
+
+            <label htmlFor="us_apellido_materno">apellido materno:</label><br />
+            <input type="text" name="us_apellido_materno" id="us_apellido_materno" required/><br />
+
+            <label htmlFor="us_usuario">usuario:</label><br />
+            <input type="text" name="us_usuario" id="us_usuario" required/><br />
 
             <label htmlFor="us_gen_id">género:</label><br />
             <select name="us_gen_id" id="us_gen_id" required>
@@ -51,12 +57,6 @@ export default function NewUser({show}) {
               <option value="1">masculino</option>
               <option value="2">femenina</option>
             </select><br />
-
-            <label htmlFor="us_usuario">usuario:</label><br />
-            <input type="text" name="us_usuario" id="us_usuario" required/><br />
-
-            <label htmlFor="us_correo">correo:</label><br />
-            <input type="email" name="us_correo" id="us_correo" required/><br />
 
             <label htmlFor="us_rol_id">cargo:</label><br />
             <select name="us_rol_id" id="us_rol_id" required>

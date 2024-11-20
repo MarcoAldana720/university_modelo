@@ -1,17 +1,33 @@
 import { NextResponse } from "next/server";
 import { conn } from "../../../libs/db";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 import bcrypt from "bcrypt";
 
-// FUNCION PARA PODER MOSTRAR TODOS LOS USUARIOS
+const JWT_SECRET = process.env.JWT_SECRET;
+
 export async function GET() {
   try {
+    // Obtener el token desde las cookies
+    const cookieStore = cookies();
+    const token = cookieStore.get('myTokenName')?.value;
+
+    if (!token) {
+      return NextResponse.json({ message: 'No token provided' }, { status: 401 });
+    }
+
+    // Decodificar el token JWT
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const loggedInUser = decoded.username; // Nombre del usuario que inició sesión
+
+    // Modificar la consulta para excluir al usuario que inició sesión
     const results = await conn.query(`
       SELECT
         usuarios.us_id,
         usuarios.us_nombres,
-        usuarios.us_apellidos,
+        usuarios.us_apellido_paterno,
+        usuarios.us_apellido_materno,
         usuarios.us_usuario,
-        usuarios.us_correo,
         generos.gen_descripcion,
         roles.rol_descripcion,
         escuelas.esc_descripcion,
@@ -27,10 +43,10 @@ export async function GET() {
       JOIN
         escuelas ON usuarios.us_esc_id = escuelas.esc_id
       WHERE
-        roles.rol_descripcion IN ('profesor')
+        usuarios.us_usuario != ?
       ORDER BY
         usuarios.us_nombres ASC
-    `);
+    `, [loggedInUser]);
 
     return NextResponse.json(results);
 
@@ -51,19 +67,19 @@ export async function POST(request) {
     const data = await request.json();
     const {
       us_nombres,
-      us_apellidos,
+      us_apellido_paterno,
+      us_apellido_materno,
       us_usuario,
-      us_correo,
       us_gen_id,
       us_rol_id,
       us_esc_id,
     } = data;
 
-    const existingUser = await conn.query("SELECT * FROM usuarios WHERE us_usuario = ? OR us_correo = ?", [us_usuario, us_correo]);
+    const existingUser = await conn.query("SELECT * FROM usuarios WHERE us_usuario = ?", [us_usuario]);
 
     if (existingUser.length > 0) {
       return NextResponse.json({
-        message: "El Usuario O Correo Electrónico Ya Existe.",
+        message: "El Usuario Ya Existe.",
       }, {
         status: 400,
       });
@@ -81,9 +97,9 @@ export async function POST(request) {
 
     const result = await conn.query("INSERT INTO usuarios SET ?", {
       us_nombres,
-      us_apellidos,
+      us_apellido_paterno,
+      us_apellido_materno,
       us_usuario,
-      us_correo,
       us_contrasena: hashedPassword,
       us_gen_id,
       us_rol_id,
@@ -93,9 +109,9 @@ export async function POST(request) {
 
     return NextResponse.json({
       us_nombres,
-      us_apellidos,
+      us_apellido_paterno,
+      us_apellido_materno,
       us_usuario,
-      us_correo,
       us_gen_id,
       us_rol_id,
       us_esc_id,

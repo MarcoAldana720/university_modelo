@@ -19,6 +19,7 @@ export default function ListUsers() {
 
   const searchParams = useSearchParams();
   const isAddingNewUser = searchParams.get("new") === "1";
+  const searchQuery = searchParams.get("search") || "";
 
   useEffect(() => {
     async function fetchUsers() {
@@ -30,17 +31,24 @@ export default function ListUsers() {
   }, [isAddingNewUser]);
 
   useEffect(() => {
-    const results = usuarios.filter(user =>
-      user.us_nombres.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.us_apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.gen_descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.rol_descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.esc_descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.es_descripcion.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    setSearchTerm(searchQuery); // Establecer el término de búsqueda desde la URL
+
+    const results = usuarios.filter(user => {
+      const searchWords = searchTerm.toLowerCase().trim().split(/\s+/); // Dividir en palabras
+      return searchWords.every(word => (
+        user.us_nombres.toLowerCase().includes(word) ||
+        user.us_apellido_paterno.toLowerCase().includes(word) ||
+        user.us_apellido_materno.toLowerCase().includes(word) ||
+        user.gen_descripcion.toLowerCase().includes(word) ||
+        user.rol_descripcion.toLowerCase().includes(word) ||
+        user.esc_descripcion.toLowerCase().includes(word) ||
+        user.es_descripcion.toLowerCase().includes(word)
+      ));
+    });
+
     setFilteredUsers(results);
     setPageCurrent(0);
-  }, [searchTerm, usuarios]);
+  }, [searchTerm, usuarios, searchQuery]);
 
   const pages = Math.ceil(filteredUsers.length / 15);
   const usersPag = filteredUsers.slice(pageCurrent * 15, (pageCurrent + 1) * 15);
@@ -99,12 +107,13 @@ export default function ListUsers() {
           <table>
             <thead>
               <tr>
-                <th>Nombre(s)</th>
-                <th>Apellido(s)</th>
-                <th>Género</th>
-                <th>Cargo</th>
-                <th>Escuela</th>
-                <th>Estado</th>
+                <th>nombre(s)</th>
+                <th>apellido paterno</th>
+                <th>apellido materno</th>
+                <th>género</th>
+                <th>cargo</th>
+                <th>escuela</th>
+                <th>estado</th>
               </tr>
             </thead>
             <tbody>

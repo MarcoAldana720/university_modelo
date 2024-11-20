@@ -8,9 +8,9 @@ export async function GET(request, { params }) {
       SELECT
         usuarios.us_id,
         usuarios.us_nombres,
-        usuarios.us_apellidos,
+        usuarios.us_apellido_paterno,
+        usuarios.us_apellido_materno,
         usuarios.us_usuario,
-        usuarios.us_correo,
         generos.gen_id,
         generos.gen_descripcion,
         roles.rol_id,

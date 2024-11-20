@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import ButtonEdit from "./ButtonEdit";
 import ButtonResetPassword from "./ButtonResetPassword";
@@ -13,12 +13,12 @@ export default function InfoUser({ userId, searchParams }) {
 
     useEffect(() => {
         const loadUser = async () => {
-        try {
-            const { data } = await axios.get(`/api/admin/${userId}`);
-            setUser(data);
-        } catch (error) {
-            console.log(error);
-        }
+            try {
+                const { data } = await axios.get(`/api/admin/${userId}`);
+                setUser(data);
+            } catch (error) {
+                console.log(error);
+            }
         };
 
         loadUser();
@@ -29,38 +29,43 @@ export default function InfoUser({ userId, searchParams }) {
         return null;
     }
 
-    const { us_id, us_nombres, us_apellidos, rol_descripcion, esc_descripcion, es_descripcion } = user;
+    const { us_id, us_nombres, us_apellido_paterno, us_apellido_materno, rol_descripcion, esc_descripcion, es_descripcion } = user;
 
     // Función para mostrar las iniciales
-    const getInitials = (nombres, apellidos) => {
+    const getInitials = (nombres, apellidoPaterno, apellidoMaterno) => {
         const firstNameInitial = nombres ? nombres.charAt(0) : '';
-        const lastNameInitial = apellidos ? apellidos.charAt(0) : '';
+        const lastNameInitial = apellidoPaterno ? apellidoPaterno.charAt(0) : (apellidoMaterno ? apellidoMaterno.charAt(0) : '');
         return firstNameInitial + lastNameInitial;
     };
 
-    const initials = getInitials(us_nombres, us_apellidos);
+    const initials = getInitials(us_nombres, us_apellido_paterno, us_apellido_materno);
 
     return (
         <div className="custom_container">
-        <EditUser show={Boolean(searchParams.edit)} />
-        <Link href="/admin/usuarios">&lt; regresar</Link><br /><br />
+            <EditUser show={Boolean(searchParams.edit)} />
+            <Link href="/admin/usuarios">&lt; regresar</Link><br /><br />
 
-        <div className="profile_card">
-            <div className="profile_initials">{initials}</div>
-            <h1 className="profile_name">{`${us_nombres} ${us_apellidos}`}</h1>
-            <div className="profile_center">
-                <p className="profile_description">cargo: {rol_descripcion}</p>
-                <p className="profile_description">escuela: {esc_descripcion}</p>
-                <p className="profile_description">estado: {es_descripcion}</p>
-            </div><br />
+            <div className="profile_card">
+                <div className="profile_initials">{initials}</div>
+                <h1 className="profile_name">
+                    {us_nombres}
+                    {(us_apellido_paterno || us_apellido_materno) && ' '}
+                    {us_apellido_paterno && `${us_apellido_paterno}`}
+                    {us_apellido_materno && (us_apellido_paterno ? ` ${us_apellido_materno}` : `${us_apellido_materno}`)}
+                </h1>
+                <div className="profile_center">
+                    <p className="profile_description">cargo: <span>{rol_descripcion}</span></p>
+                    <p className="profile_description">escuela: <span>{esc_descripcion}</span></p>
+                    <p className="profile_description">estado: <span> {es_descripcion}</span></p>
+                </div>
 
-            {/* Permite Restablecer La Contraseña */}
-            <ButtonResetPassword us_id={us_id} />
-            {/* Permite Exportar La Información En Formato PDF */}
-            <ExportInfo userId={us_id} />
-            {/* Permite Editar La Información */}
-            <ButtonEdit id={us_id} />
-        </div>
+                {/* Permite Restablecer La Contraseña */}
+                <ButtonResetPassword us_id={us_id} />
+                {/* Permite Exportar La Información En Formato PDF */}
+                <ExportInfo userId={us_id} />
+                {/* Permite Editar La Información */}
+                <ButtonEdit id={us_id} />
+            </div>
         </div>
     );
 }

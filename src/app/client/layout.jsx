@@ -46,13 +46,15 @@ export default function layout({ children }) {
     }
   };
 
-  const getInitials = (nombres, apellidos) => {
+  // Actualiza la función para tomar la inicial del apellido paterno o materno
+  const getInitials = (nombres, apellidoPaterno, apellidoMaterno) => {
     const firstNameInitial = nombres ? nombres.charAt(0) : '';
-    const lastNameInitial = apellidos ? apellidos.charAt(0) : '';
+    const lastNameInitial = apellidoPaterno ? apellidoPaterno.charAt(0) : (apellidoMaterno ? apellidoMaterno.charAt(0) : '');
     return firstNameInitial + lastNameInitial;
   };
 
-  const initials = userData ? getInitials(userData.us_nombres, userData.us_apellidos) : '';
+  // Obtén las iniciales usando us_nombres, us_apellido_paterno y us_apellido_materno
+  const initials = userData ? getInitials(userData.us_nombres, userData.us_apellido_paterno, userData.us_apellido_materno) : '';
 
   return (
     <div className="flex bg-slate-50">
@@ -61,14 +63,18 @@ export default function layout({ children }) {
       <div className="flex-1 overflow-hidden h-screen flex flex-col">
         <header className="h-20 px-5 bg-primary flex items-center justify-between text-white sticky top-0 z-10">
           <button onClick={toggleSidebar} className="text-white lg:hidden">
-            <MenuIcon width={18} />
+            <MenuIcon width={20} />
           </button>
           <div className="flex-1 flex justify-end items-center gap-3">
-            <Link href={`${pathname}?profile=1`} className="flex items-center gap-3">
+            <Link href={`${pathname}?profile=1`} className="flex items-center gap-3" title="Perfil">
               <div className="text-sm text-right hidden md:block">
                 {userData && (
                   <>
-                    <p className="capitalize">{`${userData.us_nombres} ${userData.us_apellidos}`}</p>
+                    <p className="capitalize">
+                      {userData.us_nombres}
+                      {userData.us_apellido_paterno && ` ${userData.us_apellido_paterno}`}
+                      {userData.us_apellido_materno && ` ${userData.us_apellido_materno}`}
+                    </p>
                     <span className="text-xs capitalize">{userData.rol_descripcion}</span>
                   </>
                 )}
@@ -78,7 +84,7 @@ export default function layout({ children }) {
               </div>
             </Link>
             <button onClick={handleLogout} className="text-white" title="Cerrar Sesión">
-              <PowerIcon width={18} />
+              <PowerIcon width={20} />
             </button>
           </div>
         </header>

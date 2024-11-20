@@ -46,7 +46,7 @@ export default function LoginForm() {
         <figure className="container_img">
           <img src="/img/logo_original.png" alt="Universidad Modelo" />
         </figure>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} method="post">
           <label htmlFor="us_usuario">Usuario:</label>
           <br />
           <input type="text" id="us_usuario" name="us_usuario" required onChange={handleChange}/>

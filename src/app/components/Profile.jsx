@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useRouter, usePathname } from "next/navigation";
 import Modal from "./Modal";
@@ -12,7 +12,8 @@ export default function Profile({ show, userData }) {
 
   const [formData, setFormData] = useState({
     us_nombres: "",
-    us_apellidos: "",
+    us_apellido_paterno: "",
+    us_apellido_materno: "",
     us_usuario: "",
     us_correo: "",
     us_contrasena: "",
@@ -23,7 +24,8 @@ export default function Profile({ show, userData }) {
     if (userData) {
       setFormData({
         us_nombres: userData.us_nombres || "",
-        us_apellidos: userData.us_apellidos || "",
+        us_apellido_paterno: userData.us_apellido_paterno || "",
+        us_apellido_materno: userData.us_apellido_materno || "",
         us_usuario: userData.us_usuario || "",
         us_correo: userData.us_correo || "",
         us_contrasena: "",
@@ -78,21 +80,21 @@ export default function Profile({ show, userData }) {
         </button><br />
 
         <div className="form">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} method="post">
             <label htmlFor="us_nombres">nombre(s):</label><br />
             <input type="text" name="us_nombres" id="us_nombres" value={formData.us_nombres} onChange={handleChange} required /><br />
 
-            <label htmlFor="us_apellidos">apellido(s):</label><br />
-            <input type="text" name="us_apellidos" id="us_apellidos" value={formData.us_apellidos} onChange={handleChange} required /><br />
+            <label htmlFor="us_apellido_paterno">apellido paterno:</label><br />
+            <input type="text" name="us_apellido_paterno" id="us_apellido_paterno" value={formData.us_apellido_paterno} onChange={handleChange} required /><br />
+
+            <label htmlFor="us_apellido_materno">apellido materno:</label><br />
+            <input type="text" name="us_apellido_materno" id="us_apellido_materno" value={formData.us_apellido_materno} onChange={handleChange} required /><br />
 
             <label htmlFor="us_usuario">usuario:</label><br />
             <input type="text" name="us_usuario" id="us_usuario" value={formData.us_usuario} onChange={handleChange} required /><br />
 
-            <label htmlFor="us_correo">correo:</label><br />
-            <input type="email" name="us_correo" id="us_correo" value={formData.us_correo} onChange={handleChange} required /><br />
-
             <label htmlFor="us_contrasena">contraseña:</label><br />
-            <input type="password" name="us_contrasena" id="us_contrasena" value={formData.us_contrasena} onChange={handleChange} />
+            <input type="password" name="us_contrasena" id="us_contrasena" value={formData.us_contrasena} onChange={handleChange} maxLength="10" placeholder="Máximo 10 caracteres" />
 
             <div className="btn">
               <button type="submit">Guardar</button>

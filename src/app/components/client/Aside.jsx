@@ -6,7 +6,6 @@ import SchoolIcon from '../../assets/SchoolIcon';
 import UserInjured from '../../assets/UserInjured';
 import DocIcon from '../../assets/DocIcon';
 import BookIcon from '../../assets/BookIcon';
-import FolderIcon from '../../assets/FolderIcon';
 import CloseIcon from '../../assets/CloseIcon';
 import DocumentIcon from '../../assets/DocumentIcon';
 import LinkAside from './LinkAside';
@@ -34,7 +33,7 @@ export default function Aside({ isOpen, onClose }) {
           </figure>
         </div>
 
-        <nav className="mt-6 px-3 capitalize">
+        <nav className="aside__nav py-6 px-3 capitalize">
           <button onClick={() => setshowSubmenu(!showSubmenu)} className="capitalize w-full flex px-3 rounded-md items-center justify-between gap-2 py-3 transition duration-300 hover:bg-white hover:text-primary group/link">
             <div className="flex items-center gap-4">
               <DocumentIcon width={20} className="fill-white group-hover/link:fill-primary inline-block" />
@@ -47,11 +46,8 @@ export default function Aside({ isOpen, onClose }) {
             <LinkAside Icon={IdCardIcon} href="/client/identify" onClick={onClose}>identificación de profesor</LinkAside>
             <LinkAside Icon={SchoolIcon} href="/client/studies" onClick={onClose}>estudios realizados</LinkAside>
             <LinkAside Icon={DocIcon} href="/client/employmentdata" onClick={onClose}>datos laborales</LinkAside>
-            <LinkAside Icon={BookIcon} href="/client/generationline" onClick={onClose}>linea de generación o aplicación innovadora del conocimiento</LinkAside>
+            <LinkAside Icon={BookIcon} href="/client/generationline" onClick={onClose}>linea de generación</LinkAside>
             <LinkAside Icon={UserInjured} href="/client/academicproduction" onClick={onClose}>producción académica</LinkAside>
-            <LinkAside Icon={FolderIcon} href="/client/researchprojects" onClick={onClose}>proyectos de investigación</LinkAside>
-            <LinkAside Icon={FolderIcon} href="/client/" onClick={onClose}>docencia</LinkAside>
-            <LinkAside Icon={FolderIcon} href="/client/" onClick={onClose}>dirección individualizada</LinkAside>
           </div>
         </nav>
       </aside>

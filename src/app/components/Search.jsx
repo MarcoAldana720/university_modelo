@@ -8,12 +8,18 @@ function Search({ onSearch }) {
   const router = useRouter();
 
   useEffect(() => {
-    onSearch(searchTerm);
-    if (!searchTerm) {
-      router.push("/admin/usuarios");
-    } else {
-      router.push(`/admin/usuarios?search=${encodeURIComponent(searchTerm)}`);
-    }
+    const handler = setTimeout(() => {
+      onSearch(searchTerm);
+      if (!searchTerm) {
+        router.push("/admin/usuarios");
+      } else {
+        router.push(`/admin/usuarios?search=${encodeURIComponent(searchTerm)}`);
+      }
+    }, 300); // Tiempo de debounce
+
+    return () => {
+      clearTimeout(handler); // Limpiar el timeout
+    };
   }, [searchTerm]);
 
   return (
