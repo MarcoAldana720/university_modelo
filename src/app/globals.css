@@ -851,7 +851,7 @@ body {
 }
 
 .form_left select, .form_right select {
-  border: 1px #333 solid;
+  border: 1px #000 solid;
   width: 100%;
   border-radius: 5px;
   padding: 11px 5px;
@@ -861,6 +861,22 @@ body {
 }
 
 .form_left select:disabled, .form_right select:disabled {
+  color: #666;
+  cursor: not-allowed;
+  background-color: #EEE;
+}
+
+.type_production {
+  border: 1px #000 solid;
+  width: 49%;
+  border-radius: 5px;
+  padding: 11px 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-transform: capitalize;
+}
+
+.type_production:disabled {
   color: #666;
   cursor: not-allowed;
   background-color: #EEE;

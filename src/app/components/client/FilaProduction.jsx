@@ -27,7 +27,7 @@ export default function FilaProduction({ producciones }) {
   };
 
   return (
-    <tr key={producciones.pd_id} onClick={() => redireccion(producciones.pd_id)}>
+    <tr key={producciones.id_produccion} onClick={() => redireccion(producciones.id_produccion)}>
       <td data-titulo="titulo:">{producciones.titulo}</td>
       <td data-titulo="año:">{formatDate(producciones.fecha_publicacion)}</td>
       <td data-titulo="tipo de producción:">{producciones.tipo_produccion}</td>

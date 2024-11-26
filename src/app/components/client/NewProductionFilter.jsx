@@ -6,7 +6,7 @@ import Modal from "./Modal";
 import { toast } from "sonner";
 import { useState } from "react";
 
-export default function NewProduction({ show }) {
+export default function NewProductionFilter({ show }) {
   const [selectedOption, setSelectedOption] = useState("");
   const pathname = usePathname();
   const router = useRouter();

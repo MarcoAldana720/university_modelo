@@ -14,6 +14,7 @@ export async function GET(req, { params }) {
   const query = `
     SELECT
       pa.pd_id AS producto_id,
+      tp.tp_id,
       tp.tp_descripcion AS tipo_produccion,
       pa.pd_id_articulo,
       pa.pd_id_libro,
@@ -43,164 +44,153 @@ export async function GET(req, { params }) {
   return NextResponse.json(results[0]); // Devuelve un solo registro
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// FUNCTION PARA ELIMINAR EL ESTUDIO QUE HA SELECCIONADO DEL USUARIO QUE HA INICIADO SESION
+// FUNCTION PARA ELIMINAR LA PRODUCCION QUE HA SELECCIONADO DEL USUARIO QUE HA INICIADO SESION
 export async function DELETE(request, { params }) {
   try {
-    // Obtener el token de las cookies
     const cookieStore = cookies();
     const token = cookieStore.get("myTokenName");
 
-    // Verificar si el token está presente y obtener solo su valor
     if (!token || typeof token.value !== "string") {
-      return NextResponse.json(
-        {
-          message: "No Autorizado, Token Inválido O Ausente."
-        }, {
-          status: 401
-        }
-      );
+      return NextResponse.json({ message: "No autorizado." }, { status: 401 });
     }
 
-    // Decodificar el token para obtener el id del usuario
     const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
-    const userId = decoded.id; // ID del usuario en el token
+    const userId = decoded.id;
 
-    // Ejecutar la consulta para eliminar el estudio por su ID y el ID del usuario
-    const result = await conn.query(`
-      DELETE FROM estudios
-      WHERE est_id = ? AND est_id_profesor = ?
-    `, [params.id, userId]);
+    // Buscar la producción académica
+    const [produccion] = await conn.query(
+      `SELECT pd_id_articulo, pd_id_libro FROM productos_academicos WHERE pd_id = ? AND pd_id_profesor = ?`,
+      [params.id, userId]
+    );
 
-    // Verificar si se eliminó algún registro
-    if (result.affectedRows === 0) {
-      return NextResponse.json(
-        {
-          message: "Estudio No Encontrado O No Autorizado."
-        }, {
-          status: 404
-        }
-      );
+    if (!produccion) {
+      return NextResponse.json({ message: "Producción académica no encontrada." }, { status: 404 });
     }
 
-    // Respuesta de éxito
-    return new Response(null, {
-      status: 204,
-    });
+    // Eliminar referencias en `productos_academicos`
+    if (produccion.pd_id_articulo) {
+      await conn.query(`DELETE FROM productos_academicos WHERE pd_id_articulo = ?`, [produccion.pd_id_articulo]);
+      await conn.query(`DELETE FROM articulos WHERE art_id = ?`, [produccion.pd_id_articulo]);
+    }
+
+    if (produccion.pd_id_libro) {
+      await conn.query(`DELETE FROM productos_academicos WHERE pd_id_libro = ?`, [produccion.pd_id_libro]);
+      await conn.query(`DELETE FROM libros WHERE lib_id = ?`, [produccion.pd_id_libro]);
+    }
+
+    // Confirmar eliminación exitosa
+    return new Response(null, { status: 204 });
   } catch (error) {
+    console.error("Error al eliminar:", error);
     return NextResponse.json(
       {
-        message: error.message
-      }, {
-        status: 500
-      }
+        message: "Error en la operación de eliminación.",
+        detalle: error.message,
+      },
+      { status: 500 }
     );
   }
 }
 
-// FUNCTION PARA EDITAR EL ESTUDIO QUE HA SELECCIONADO DEL USUARIO QUE HA INICIADO SESION
+// FUNCTION PARA EDITAR LA PRODUCCION QUE HA SELECCIONADO DEL USUARIO QUE HA INICIADO SESION
 export async function PUT(request, { params }) {
   try {
-    // Obtener el token de las cookies
     const cookieStore = cookies();
     const token = cookieStore.get("myTokenName");
 
-    // Verificar si el token está presente y obtener solo su valor
     if (!token || typeof token.value !== "string") {
+      return NextResponse.json({ message: "No autorizado." }, { status: 401 });
+    }
+
+    const decoded = jwt.verify(token.value, JWT_SECRET);
+    const userId = decoded.id;
+
+    const { id } = params;
+    const body = await request.json();
+
+    // Obtener el tipo de producto y referencias relacionadas
+    const [produccion] = await conn.query(
+      `
+      SELECT
+        pd_id_articulo,
+        pd_id_libro
+      FROM
+        productos_academicos
+      WHERE
+        pd_id = ? AND pd_id_profesor = ?
+      `,
+      [id, userId]
+    );
+
+    if (!produccion) {
       return NextResponse.json(
-        {
-          message: "No Autorizado, Token Inválido O Ausente."
-        }, {
-          status: 401
-        }
+        { message: "Producción académica no encontrada o no autorizada." },
+        { status: 404 }
       );
     }
 
-    // Decodificar el token para obtener el id del usuario
-    const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
-    const userId = decoded.id; // ID del usuario en el token
-
-    // Obtener los datos enviados en el cuerpo de la solicitud
-    const data = await request.json();
-
-    // Verificar si el estudio pertenece al usuario autenticado
-    const existingData = await conn.query(
-      "SELECT est_id_profesor FROM estudios WHERE est_id = ?",
-      [params.id]
-    );
-
-    if (existingData.length === 0) {
-      return NextResponse.json(
-        {
-          message: "Estudio No Encontrado."
-        }, {
-          status: 404
-        }
+    if (produccion.pd_id_articulo) {
+      // Editar información en la tabla `articulos`
+      const { art_autores, art_estado_actual, art_de_la_pagina, art_a_la_pagina, art_pais, art_volumen, art_fecha_publicacion, art_tipo_articulo, art_titulo_articulo, art_nombre_revista, art_editorial, art_issn, art_direccion_electronica } = body;
+      await conn.query(
+        `
+        UPDATE articulos
+        SET
+          art_autores = ?,
+          art_estado_actual = ?,
+          art_de_la_pagina = ?,
+          art_a_la_pagina = ?,
+          art_pais = ?,
+          art_volumen = ?,
+          art_fecha_publicacion = ?,
+          art_tipo_articulo = ?,
+          art_titulo_articulo = ?,
+          art_nombre_revista = ?,
+          art_editorial = ?,
+          art_issn = ?,
+          art_direccion_electronica = ?
+        WHERE
+          art_id = ?
+        `,
+        [art_autores, art_estado_actual, art_de_la_pagina, art_a_la_pagina, art_pais, art_volumen, art_fecha_publicacion, art_tipo_articulo, art_titulo_articulo, art_nombre_revista, art_editorial, art_issn, art_direccion_electronica, produccion.pd_id_articulo]
       );
     }
 
-    const dato = existingData[0];
-    if (dato.est_id_profesor !== userId) {
-      return NextResponse.json(
-        {
-          message: "No Autorizado."
-        }, {
-          status: 403
-        }
+    if (produccion.pd_id_libro) {
+      // Editar información en la tabla `libros`
+      const { lib_autores, lib_estado_actual, lib_pagina, lib_pais, lib_edicion, lib_isbn, lib_titulo_libro, lib_tipo_libro, lib_tipo_participacion, lib_editorial, lib_tiraje, lib_fecha_publicacion } = body;
+      await conn.query(
+        `
+        UPDATE libros
+        SET
+          lib_autores = ?,
+          lib_estado_actual = ?,
+          lib_pagina = ?,
+          lib_pais = ?,
+          lib_edicion = ?,
+          lib_isbn = ?,
+          lib_titulo_libro = ?,
+          lib_tipo_libro = ?,
+          lib_tipo_participacion = ?,
+          lib_editorial = ?,
+          lib_tiraje = ?,
+          lib_fecha_publicacion = ?
+        WHERE
+          lib_id = ?
+        `,
+        [lib_autores, lib_estado_actual, lib_pagina, lib_pais, lib_edicion, lib_isbn, lib_titulo_libro, lib_tipo_libro, lib_tipo_participacion, lib_editorial, lib_tiraje, lib_fecha_publicacion, produccion.pd_id_libro]
       );
     }
 
-    // Actualizar los datos en la base de datos
-    const result = await conn.query(
-      "UPDATE estudios SET ? WHERE est_id = ?",
-      [data, params.id]
-    );
-
-    // Verificar si se actualizó algún registro
-    if (result.affectedRows === 0) {
-      return NextResponse.json(
-        {
-          message: "No Se Pudo Actualizar Del Estudio."
-        }, {
-          status: 500
-        }
-      );
-    }
-
-    // Obtener los datos actualizados para confirmar
-    const updatedData = await conn.query(
-      "SELECT * FROM estudios WHERE est_id = ?",
-      [params.id]
-    );
-
-    return NextResponse.json(
-      {
-        message: "Estudio Actualizado Correctamente.",
-        data: updatedData[0], // Enviar el dato actualizado como confirmación
-      }, {
-        status: 200
-      }
-    );
+    return NextResponse.json({ message: "Información actualizada correctamente." });
   } catch (error) {
+    console.error("Error al actualizar la información:", error);
     return NextResponse.json(
       {
-        message: error.message
-      }, {
-        status: 500
-      }
+        message: "Error al actualizar la información.",
+        detalle: error.message,
+      },
+      { status: 500 }
     );
   }
 }
