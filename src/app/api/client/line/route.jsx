@@ -14,6 +14,7 @@ export async function GET() {
     // Consulta para obtener solo las líneas
     const rows = await conn.query(`
       SELECT
+        li_id,
         li_linea
       FROM
         linea
@@ -25,7 +26,7 @@ export async function GET() {
     if (rows.length === 0) {
       return NextResponse.json(
         {
-          message: "No lines found",
+          message: "No Se Encontraron Líneas.",
           data: []
         }, {
           status: 404
@@ -36,7 +37,7 @@ export async function GET() {
     // Devolver solo las líneas
     return NextResponse.json(
       {
-        message: "Lines retrieved successfully",
+        message: "Líneas Recuperadas Con Éxito.",
         data: rows
       }
     );
@@ -63,7 +64,7 @@ export async function POST(req) {
     if (!token) {
       return NextResponse.json(
         {
-          message: 'No Token Provided'
+          message: 'No Se Proporcionó Token.'
         }, {
           status: 401
         }
@@ -127,11 +128,11 @@ export async function POST(req) {
     if (resultLineaGeneracion?.affectedRows === 1) {
       return NextResponse.json(
         {
-          message: "Registro De La Linea Y Línea De Generación Agregados Exitosamente."
+          message: "Registro Añadido Exitosamente."
         }
       );
     } else {
-      throw new Error("No Se Pudo Insertar La Línea De Generación.");
+      throw new Error("No Se Pudo Insertar El Registro.");
     }
   } catch (error) {
     return NextResponse.json(

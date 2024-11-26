@@ -646,7 +646,7 @@ body {
   border: none;
   min-width: 100px;
   padding: 5px 10px;
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-weight: bold;
   background-color: #061F57;
   color: #FFF;

@@ -2,19 +2,35 @@
 
 import { useRouter } from "next/navigation";
 
-export default function Fila({usuarios}) {
+export default function FilaProduction({ producciones }) {
   const router = useRouter();
 
+  // console.log(producciones);
+
   function redireccion(id) {
-    router.push("/admin/usuarios/" + id);
+    router.push("/client/academicproduction/" + id);
     router.refresh();
   }
 
+  // Helper function to format the date
+  const formatDate = (isoString) => {
+    if (!isoString) return "";
+
+    const date = new Date(isoString);
+    if (isNaN(date)) return ""; // Checks if the date is valid
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`; // Format: DD/MM/YYYY
+  };
+
   return (
-    <tr key={usuarios.us_id} onClick={() => redireccion(usuarios.us_id)}>
-      <td data-titulo="titulo:">{usuarios.us_nombres}</td>
-      <td data-titulo="año:">{usuarios.gen_descripcion}</td>
-      <td data-titulo="tipo de producción:">{usuarios.rol_descripcion}</td>
+    <tr key={producciones.pd_id} onClick={() => redireccion(producciones.pd_id)}>
+      <td data-titulo="titulo:">{producciones.titulo}</td>
+      <td data-titulo="año:">{formatDate(producciones.fecha_publicacion)}</td>
+      <td data-titulo="tipo de producción:">{producciones.tipo_produccion}</td>
     </tr>
   )
 }

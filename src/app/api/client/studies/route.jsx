@@ -19,7 +19,7 @@ export async function GET() {
     if (!token) {
       return NextResponse.json(
         {
-          message: 'No token provided'
+          message: 'No Se Proporcionó Token.'
         }, {
           status: 401
         }
@@ -28,7 +28,7 @@ export async function GET() {
 
     // Decodificar el token JWT
     const decoded = jwt.verify(token, JWT_SECRET);
-    const loggedInUser = decoded.username; // Nombre del usuario que inició sesión
+    const loggedInUser = decoded.id; // Nombre del usuario que inició sesión
 
     // Consulta para obtener toda la información de estudios del usuario autenticado
     const results = await conn.query(`
@@ -45,14 +45,14 @@ export async function GET() {
       LEFT JOIN
         estudios ON usuarios.us_id = estudios.est_id_profesor
       WHERE
-        usuarios.us_usuario = ?
+        usuarios.us_id = ?
     `, [loggedInUser]);
 
     // Verificar si se encontraron resultados
     if (results.length === 0) {
       return NextResponse.json(
         {
-          message: 'No study records found for the user'
+          message: 'No Se Encontraron Registros Para La Usuaria.'
         }, {
           status: 404
         }
@@ -82,7 +82,7 @@ export async function POST(req) {
     if (!token) {
       return NextResponse.json(
         {
-          message: 'No token provided'
+          message: 'No Se Proporcionó Token.'
         }, {
           status: 401
         }
@@ -115,7 +115,7 @@ export async function POST(req) {
     ) {
       return NextResponse.json(
         {
-          message: 'Missing required fields'
+          message: 'Faltan Campos Obligatorios.'
         }, {
           status: 400
         }
@@ -146,17 +146,17 @@ export async function POST(req) {
       ]
     );
 
-    console.log("Resultado de la inserción:", result); // Log para verificar el resultado
+    // console.log("Resultado de la inserción:", result);
 
     if (result?.affectedRows === 1) {
       return NextResponse.json(
         {
-          message: "Study record added successfully",
+          message: "Registro Añadido Exitosamente.",
           insertId: result.insertId
         }
       );
     } else {
-      throw new Error("Failed to insert study record");
+      throw new Error("No Se Pudo Insertar El Registro.");
     }
 
   } catch (error) {

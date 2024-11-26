@@ -28,7 +28,7 @@ export async function GET() {
 
     // Decodificar el token JWT
     const decoded = jwt.verify(token, JWT_SECRET);
-    const loggedInUser = decoded.username; // Nombre del usuario que inició sesión
+    const loggedInUser = decoded.id; // Nombre del usuario que inició sesión
 
     // Consulta para obtener la línea de generación del usuario autenticado
     const results = await conn.query(`
@@ -43,7 +43,7 @@ export async function GET() {
       LEFT JOIN
         linea ON linea_generacion.lg_id_linea = linea.li_id
       WHERE
-        usuarios.us_usuario = ?
+        usuarios.us_id = ?
     `, [loggedInUser]);
 
     // console.log(results)

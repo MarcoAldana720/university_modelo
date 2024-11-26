@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// FUNCION PARA OPTENER TODOS LOS ESTUDIOS QUE HA REALIZADO EL USUARIO QUE INICIO SESION
+// FUNCION PARA OBTENER TITULO, FECHA Y TIPO DE PRODUCCION
 export async function GET() {
   try {
     // Obtener el token desde las cookies
@@ -28,36 +28,42 @@ export async function GET() {
 
     // Decodificar el token JWT
     const decoded = jwt.verify(token, JWT_SECRET);
-    const loggedInUser = decoded.username; // Nombre del usuario que inició sesión
+    const loggedInUser = decoded.id; // ID del usuario que inició sesión
 
-    // Consulta para obtener toda la información de estudios del usuario autenticado
+    // Consulta para obtener el título, fecha de publicación y tipo de producción
     const results = await conn.query(`
       SELECT
-        estudios.est_id,
-        estudios.est_nivel_estudios,
-        estudios.est_area_estudio,
-        estudios.est_disciplina_estudio,
-        estudios.est_institucion_otorgante,
-        estudios.est_pais_institucion,
-        estudios.est_fecha_obtencion_titulo
+        pd_id AS id_produccion,
+        tp_descripcion AS tipo_produccion,
+        CASE
+          WHEN pd_id_articulo IS NOT NULL THEN art_titulo_articulo
+          WHEN pd_id_libro IS NOT NULL THEN lib_titulo_libro
+        END AS titulo,
+        CASE
+          WHEN pd_id_articulo IS NOT NULL THEN art_fecha_publicacion
+          WHEN pd_id_libro IS NOT NULL THEN lib_fecha_publicacion
+        END AS fecha_publicacion
       FROM
-        usuarios
-      LEFT JOIN
-        estudios ON usuarios.us_id = estudios.est_id_profesor
+        productos_academicos
+      LEFT JOIN tipo_produccion ON pd_id_tipo = tp_id
+      LEFT JOIN articulos ON pd_id_articulo = art_id
+      LEFT JOIN libros ON pd_id_libro = lib_id
       WHERE
-        usuarios.us_usuario = ?
+        pd_id_profesor = ?
     `, [loggedInUser]);
 
     // Verificar si se encontraron resultados
     if (results.length === 0) {
       return NextResponse.json(
         {
-          message: 'No study records found for the user'
+          message: 'No articles or books found for the user'
         }, {
           status: 404
         }
       );
     }
+
+    // console.log(results);
 
     return NextResponse.json(results);
 
@@ -73,7 +79,7 @@ export async function GET() {
   }
 }
 
-// FUNCION PARA AGREGAR UN ESTUDIO NUEVO QUE HA REALIZADO EL USUARIO QUE INICIO SESION
+// FUNCION PARA INSERTAR UN NUEVO ARTÍCULO O LIBRO DEPENDIENDO DEL TIPO DE PRODUCCIÓN
 export async function POST(req) {
   try {
     const cookieStore = cookies();
@@ -81,92 +87,126 @@ export async function POST(req) {
 
     if (!token) {
       return NextResponse.json(
-        {
-          message: 'No token provided'
-        }, {
-          status: 401
-        }
+        { message: 'No se proporcionó token.' },
+        { status: 401 }
       );
     }
 
-    // Decodificar el token JWT para obtener el `id`
-    const decoded = jwt.verify(token, JWT_SECRET);
-    console.log(decoded); // Verificar el contenido del token
-    const est_id_profesor = decoded.id; // Asegúrate de que esto sea correcto
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const loggedInUser = decoded.id;
 
-    // Obtener los datos del cuerpo de la solicitud
-    const {
-      est_nivel_estudios,
-      est_area_estudio,
-      est_disciplina_estudio,
-      est_institucion_ortogante,
-      est_pais_institucion,
-      est_fecha_obtencion_titulo
-    } = await req.json();
+    const { tipo_produccion, titulo, fecha_publicacion, detalles } = await req.json();
 
-    // Validación de datos
-    if (
-      !est_nivel_estudios ||
-      !est_area_estudio ||
-      !est_disciplina_estudio ||
-      !est_institucion_ortogante ||
-      !est_pais_institucion ||
-      !est_fecha_obtencion_titulo
-    ) {
+    if (!detalles || !detalles.autores || !detalles.estado_actual || !detalles.pais) {
       return NextResponse.json(
-        {
-          message: 'Missing required fields'
-        }, {
-          status: 400
-        }
+        { message: 'Faltan detalles requeridos para la producción.' },
+        { status: 400 }
       );
     }
 
-    // Inserción de los datos en la base de datos
-    const result = await conn.query(
-      `
-      INSERT INTO estudios (
-        est_nivel_estudios,
-        est_area_estudio,
-        est_disciplina_estudio,
-        est_institucion_otorgante,
-        est_pais_institucion,
-        est_fecha_obtencion_titulo,
-        est_id_profesor
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    let nuevoProductoId;
+
+    if (tipo_produccion === 'articulo') {
+      const resultArticulo = await conn.query(
+        `
+        INSERT INTO articulos (
+          art_titulo_articulo,
+          art_fecha_publicacion,
+          art_tipo_articulo,
+          art_autores,
+          art_estado_actual,
+          art_de_la_pagina,
+          art_a_la_pagina,
+          art_pais,
+          art_volumen,
+          art_nombre_revista,
+          art_editorial,
+          art_issn,
+          art_direccion_electronica
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
+        [
+          titulo,
+          fecha_publicacion,
+          detalles.tipo_articulo || null,
+          detalles.autores,
+          detalles.estado_actual,
+          detalles.de_la_pagina || null,
+          detalles.a_la_pagina || null,
+          detalles.pais,
+          detalles.volumen || null,
+          detalles.nombre_revista || null,
+          detalles.editorial || null,
+          detalles.issn || null,
+          detalles.direccion_electronica || null,
+        ]
+      );
+
+      nuevoProductoId = resultArticulo.insertId;
+    } else if (tipo_produccion === 'libro') {
+      const resultLibro = await conn.query(
+        `
+        INSERT INTO libros (
+          lib_titulo_libro,
+          lib_fecha_publicacion,
+          lib_tipo_libro,
+          lib_autores,
+          lib_estado_actual,
+          lib_pagina,
+          lib_pais,
+          lib_edicion,
+          lib_isbn,
+          lib_editorial,
+          lib_tiraje,
+          lib_tipo_participacion
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+        [
+          titulo,
+          fecha_publicacion,
+          detalles.tipo_libro || null,
+          detalles.autores,
+          detalles.estado_actual,
+          detalles.pagina || null,
+          detalles.pais,
+          detalles.edicion || null,
+          detalles.isbn || null,
+          detalles.editorial || null,
+          detalles.tiraje || null,
+          detalles.tipo_participacion || null,
+        ]
+      );
+
+      nuevoProductoId = resultLibro.insertId;
+    } else {
+      return NextResponse.json(
+        { message: 'Tipo de producción inválido.' },
+        { status: 400 }
+      );
+    }
+
+    await conn.query(
+      `
+      INSERT INTO productos_academicos (pd_id_tipo, pd_id_articulo, pd_id_libro, pd_id_profesor)
+      VALUES (?, ?, ?, ?)
+    `,
       [
-        est_nivel_estudios,
-        est_area_estudio,
-        est_disciplina_estudio,
-        est_institucion_ortogante,
-        est_pais_institucion,
-        est_fecha_obtencion_titulo,
-        est_id_profesor // Asegúrate de que esto contenga el ID correcto
+        tipo_produccion === 'articulo' ? 1 : 2,
+        tipo_produccion === 'articulo' ? nuevoProductoId : null,
+        tipo_produccion === 'libro' ? nuevoProductoId : null,
+        loggedInUser,
       ]
     );
 
-    console.log("Resultado de la inserción:", result); // Log para verificar el resultado
-
-    if (result?.affectedRows === 1) {
-      return NextResponse.json(
-        {
-          message: "Study record added successfully",
-          insertId: result.insertId
-        }
-      );
-    } else {
-      throw new Error("Failed to insert study record");
-    }
-
+    return NextResponse.json({
+      message: 'Nuevo producto agregado exitosamente.',
+      productId: nuevoProductoId,
+    });
   } catch (error) {
-    console.error("Error:", error);
+    console.error('Error:', error);
     return NextResponse.json(
-      {
-        message: error.message
-      }, {
-        status: 500
-      }
+      { message: error.message },
+      { status: 500 }
     );
   }
 }

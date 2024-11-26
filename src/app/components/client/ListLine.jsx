@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -6,6 +6,7 @@ import Link from "next/link";
 import FilaLine from "./FilaLine";
 import NewLine from "./NewLine";
 import NewLineFilter from "./NewLineFilter";
+import AssociateLine from "./AssociateLine";
 import AddUserIcon from "../../assets/AddUserIcon";
 import ReturnIcon from "../../assets/ReturnIcon";
 import { useSearchParams } from "next/navigation";
@@ -14,6 +15,7 @@ export default function ListLine() {
   const [lineas, setLineas] = useState([]);
   const searchParams = useSearchParams();
   const isAddingNewLine = searchParams.get("new") === "1";
+  const isEditLine = searchParams.get('editLine') ?? false
 
   useEffect(() => {
     async function fetchLines() {
@@ -98,7 +100,7 @@ export default function ListLine() {
 
       <NewLineFilter show={isAddingNewLine} />
       <NewLine show={isAddingNewLine} />
-
+      <AssociateLine show={isEditLine} />
     </section>
   );
 }

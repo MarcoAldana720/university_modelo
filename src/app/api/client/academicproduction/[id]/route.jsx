@@ -1,83 +1,61 @@
-import { conn } from "../../../../../libs/db";
 import { NextResponse } from "next/server";
+import { conn } from "../../../../../libs/db";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-// FUNCION PARA OBTENER INFORMACION DE ESTUDIO DEL USUARIO QUE HA INICIADO SESION
-export async function GET(request, { params }) {
-  try {
-    // Obtener el token de las cookies
-    const cookieStore = cookies();
-    const token = cookieStore.get("myTokenName");
+// Fuerza la generación dinámica
+export const dynamic = "force-dynamic";
 
-    // Verificar si el token está presente y obtener solo su valor
-    if (!token || typeof token.value !== "string") {
-      return NextResponse.json(
-        {
-          message: "No Autorizado, Token Inválido O Ausente."
-        }, {
-          status: 401
-        }
-      );
-    }
+const JWT_SECRET = process.env.JWT_SECRET;
 
-    // Decodificar el token para obtener el id del usuario
-    const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
-    const userId = decoded.id; // ID del usuario en el token
+export async function GET(req, { params }) {
+  const { id } = params;
 
-    // Consultar la base de datos para obtener el estudio y verificar que pertenece al usuario
-    const result = await conn.query(`
-      SELECT
-        estudios.est_id,
-        estudios.est_nivel_estudios,
-        estudios.est_area_estudio,
-        estudios.est_disciplina_estudio,
-        estudios.est_institucion_otorgante,
-        estudios.est_pais_institucion,
-        estudios.est_fecha_obtencion_titulo,
-        estudios.est_id_profesor
-      FROM
-        estudios
-      WHERE
-        estudios.est_id = ?
-    `, [params.id]);
+  const query = `
+    SELECT
+      pa.pd_id AS producto_id,
+      tp.tp_descripcion AS tipo_produccion,
+      pa.pd_id_articulo,
+      pa.pd_id_libro,
+      a.*,
+      l.*
+    FROM
+      productos_academicos pa
+    LEFT JOIN
+      tipo_produccion tp ON pa.pd_id_tipo = tp.tp_id
+    LEFT JOIN
+      articulos a ON pa.pd_id_articulo = a.art_id
+    LEFT JOIN
+      libros l ON pa.pd_id_libro = l.lib_id
+    WHERE
+      pa.pd_id = ?
+  `;
 
-    // Verificar si se encontró el estudio y si pertenece al usuario
-    if (result.length === 0) {
-      return NextResponse.json(
-        {
-          message: "Estudio No Encontrado."
-        }, {
-          status: 404
-        }
-      );
-    }
+  const results = await conn.query(query, [id]);
 
-    const estudio = result[0];
-
-    // Verificar que el estudio pertenece al usuario que hace la solicitud
-    if (estudio.est_id_profesor !== userId) {
-      return NextResponse.json(
-        {
-          message: "No Autorizado."
-        }, {
-          status: 403
-        }
-      );
-    }
-
-    // Devolver los datos del estudio
-    return NextResponse.json(estudio);
-  } catch (error) {
+  if (results.length === 0) {
     return NextResponse.json(
-      {
-        message: error.message
-      }, {
-        status: 500
-      }
+      { message: "No records found" },
+      { status: 404 }
     );
   }
+
+  return NextResponse.json(results[0]); // Devuelve un solo registro
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // FUNCTION PARA ELIMINAR EL ESTUDIO QUE HA SELECCIONADO DEL USUARIO QUE HA INICIADO SESION
 export async function DELETE(request, { params }) {
