@@ -96,6 +96,22 @@ export default function FormProduction() {
           <option value="2">libros</option>
         </select>
         <br />
+
+        {/* 
+        <select
+        name="pd_id" 
+        id="pd_id" 
+        value={selectedOption} 
+        onChange={(e) => setSelectedOption(e.target.value)} 
+        required 
+        >
+          <option value="" disabled>Selecciona una opción</option>
+          <option value="1">artículo</option>
+          <option value="2">libro</option>
+        </select>
+        <br/>
+        */}
+        
         <form action="" method="post">
           {/* CONTAINER LABEL AND INPUT */}
           <div className="container_informacion">
