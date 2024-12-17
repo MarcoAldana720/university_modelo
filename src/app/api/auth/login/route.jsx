@@ -67,7 +67,7 @@ export async function POST(request) {
       httpOnly: true, // La cookie solo está disponible para el servidor
       secure: 'production', // La cookie solo se envía a través de HTTPS en producción
       sameSite: 'strict', // La cookie solo se envía con solicitudes del mismo sitio
-      maxAge: 60 * 60 * 24 * 30, // Tiempo de vida de la cookie de 30 días
+      maxAge: 60 * 60 * 24, // Tiempo de vida de la cookie de 1 días
       path: '/', // La cookie está disponible en toda la aplicación
     });
 

@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter, useParams, usePathname } from "next/navigation";
+import HelpIcon from "../../assets/HelpIcon";
 
 async function loadData(est_id) {
   try {
@@ -85,39 +86,49 @@ export default function EditStudies({ show }) {
 
         <div className="form">
           <form onSubmit={handleSubmit} method="post">
-            <label htmlFor="est_nivel_estudios">nivel de estudios:</label><br />
+            <label htmlFor="est_nivel_estudios">nivel de estudios *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="nivel académico alcanzado."><HelpIcon /></span>
+            </label><br />
             <select name="est_nivel_estudios" id="est_nivel_estudios" onChange={handleChange} value={info.est_nivel_estudios} required >
               <option value="">selecciona una opción</option>
-              <option value="doctorado">doctorado</option>
-              <option value="maestria">maestría</option>
-              <option value="licenciatura">licenciatura</option>
+              <option value="Doctorado">doctorado</option>
+              <option value="Maestria">maestría</option>
+              <option value="Licenciatura">licenciatura</option>
             </select>
             <br />
 
-            <label htmlFor="est_area_estudio">área:</label><br />
+            <label htmlFor="est_area_estudio">área *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="campo de estudio o disciplina principal."><HelpIcon /></span>
+            </label><br />
             <select name="est_area_estudio" id="est_area_estudio" onChange={handleChange} value={info.est_area_estudio} required >
               <option value="">selecciona una opción</option>
-              <option value="físico-matemáticas y ciencias de la tierra">I. físico-matemáticas y ciencias de la tierra</option>
-              <option value="biología y química">II. biología y química</option>
-              <option value="medicinas y ciencias de la salud">III. medicinas y ciencias de la salud</option>
-              <option value="ciencias de la conducta y la educación">IV. ciencias de la conducta y la educación</option>
-              <option value="humanidades">V. humanidades</option>
-              <option value="ciencias sociales">VI. ciencias sociales</option>
-              <option value="ciencias de agricultura, agropecuarias, forestales y de ecosistemas">VII. ciencias de agricultura, agropecuarias, forestales y de ecosistemas</option>
-              <option value="ingenieria y desarrollo tecnológico">VIII. ingenieria y desarrollo tecnológico</option>
-              <option value="interdisciplinaria">IX. interdisciplinaria</option>
+              <option value="Físico-matemáticas y ciencias de la tierra">I. físico-matemáticas y ciencias de la tierra</option>
+              <option value="Biología y química">II. biología y química</option>
+              <option value="Medicinas y ciencias de la salud">III. medicinas y ciencias de la salud</option>
+              <option value="Ciencias de la conducta y la educación">IV. ciencias de la conducta y la educación</option>
+              <option value="Humanidades">V. humanidades</option>
+              <option value="Ciencias sociales">VI. ciencias sociales</option>
+              <option value="Ciencias de agricultura, agropecuarias, forestales y de ecosistemas">VII. ciencias de agricultura, agropecuarias, forestales y de ecosistemas</option>
+              <option value="Ingenieria y desarrollo tecnológico">VIII. ingenieria y desarrollo tecnológico</option>
+              <option value="Interdisciplinaria">IX. interdisciplinaria</option>
             </select><br />
 
-            <label htmlFor="est_disciplina_estudio">disciplina:</label><br />
+            <label htmlFor="est_disciplina_estudio">disciplina *:</label><br />
             <input type="text" name="est_disciplina_estudio" id="est_disciplina_estudio" onChange={handleChange} value={info.est_disciplina_estudio} required /> <br />
 
-            <label htmlFor="est_fecha_obtencion_titulo">fecha de obtención del título o grado:</label><br />
+            <label htmlFor="est_fecha_obtencion_titulo">fecha de obtención del título o grado *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="fecha en que se emitió el título o grado."><HelpIcon /></span>
+            </label><br />
             <input type="date" name="est_fecha_obtencion_titulo" id="est_fecha_obtencion_titulo" onChange={handleChange} value={formatDateForInput(info.est_fecha_obtencion_titulo)} required /><br />
 
-            <label htmlFor="est_institucion_otorgante">institución otorgante:</label><br />
+            <label htmlFor="est_institucion_otorgante">institución otorgante:
+              <span className="tooltip-icon highlight-icon" data-tooltip="nombre de la universidad o institución que otorgó el título o grado."><HelpIcon /></span>
+            </label><br />
             <input type="text" name="est_institucion_otorgante" id="est_institucion_otorgante" onChange={handleChange} value={info.est_institucion_otorgante} required /><br />
 
-            <label htmlFor="est_pais_institucion">país de la institución otorgante:</label><br />
+            <label htmlFor="est_pais_institucion">país *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="país donde se encuentra la institución que emitió el título."><HelpIcon /></span>
+            </label><br />
             <input type="text" name="est_pais_institucion" id="est_pais_institucion" onChange={handleChange} value={info.est_pais_institucion} required /><br />
 
             <div className="btn">

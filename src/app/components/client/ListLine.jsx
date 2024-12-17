@@ -42,13 +42,7 @@ export default function ListLine() {
         {lineas.length > 0 ? (
           <>
             <h1 className="title">Resultados de líneas</h1>
-            <span className="description">
-              Para asociarse a una línea, primero deberás seleccionar la fila
-              correspondiente en la tabla haciendo clic en ella y luego haz
-              presión en el botón de asociar...
-            </span>
-            <br />
-            <br />
+            <span className="description">Para asociarse a una línea, primero deberás seleccionar la filacorrespondiente en la tabla haciendo clic en ella y luego haz presión en el botón de asociar...</span><br /><br />
 
             <table>
               <thead>

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { conn } from "../../../libs/db";
+import { conn } from "../../../../../../libs/db";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
@@ -8,18 +8,14 @@ export const dynamic = "force-dynamic";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export async function GET() {
+export async function GET(request, { params }) {
   try {
-    console.log("Iniciando proceso para obtener datos del usuario...");
-
     // Obtener el token desde las cookies
     const cookieStore = cookies();
     const token = cookieStore.get("myTokenName")?.value;
-    console.log("Token recibido:", token);
 
     // Verificar si el token existe
     if (!token) {
-      console.log("No se proporcionó un token en las cookies.");
       return NextResponse.json(
         { message: "No token provided" },
         { status: 401 }
@@ -30,9 +26,7 @@ export async function GET() {
     let decoded;
     try {
       decoded = jwt.verify(token, JWT_SECRET);
-      console.log("Token decodificado:", decoded);
     } catch (err) {
-      console.error("Error al verificar el token:", err.message);
       return NextResponse.json(
         {
           message: "Invalid token",
@@ -42,11 +36,18 @@ export async function GET() {
       );
     }
 
-    const loggedInUser = decoded.username; // Nombre del usuario que inició sesión
-    console.log("Usuario autenticado:", loggedInUser);
-    console.log("Valor de loggedInUser:", loggedInUser);
+    // Obtener el `id` del usuario desde los parámetros de la ruta
+    const { id } = params; // Asume que estás usando [id] como segmento dinámico de la ruta.
 
-    // Consulta para obtener la información del usuario que inició sesión
+    // Validar si el ID es un número
+    if (!id || isNaN(id)) {
+      return NextResponse.json(
+        { message: "Invalid user ID in the URL" },
+        { status: 400 }
+      );
+    }
+
+    // Consulta SQL para obtener la información del usuario seleccionado
     const [results] = await conn.query(
       `
       SELECT
@@ -68,32 +69,26 @@ export async function GET() {
         identificacion.iden_disciplina_dedicacion
       FROM
         usuarios
-      LEFT JOIN
+      JOIN
         generos ON usuarios.us_gen_id = generos.gen_id
-      LEFT JOIN
+      JOIN
         identificacion ON usuarios.us_id = identificacion.iden_id_profesor
       WHERE
-        usuarios.us_usuario = ?
+        usuarios.us_id = ?
     `,
-      [loggedInUser]
+      [id]
     );
-
-    console.log("Resultados de la consulta:", results);
 
     // Verificar si se encontraron resultados
     if (!results || results.length === 0) {
-      console.log("No se encontró al usuario.");
       return NextResponse.json(
-        { message: "User not found" },
+        { message: "No user found with the provided ID" },
         { status: 404 }
       );
     }
 
-    // Retornar los resultados
-    console.log("Datos del usuario obtenidos con éxito.");
     return NextResponse.json(results);
   } catch (error) {
-    console.error("Error inesperado:", error);
     // Manejar cualquier error inesperado
     return NextResponse.json(
       {

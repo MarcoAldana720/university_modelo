@@ -39,10 +39,7 @@ export default function ListStudies() {
         {estudios.length > 0 ? (
           <>
             <h1 className="title">resumen de estudios realizados</h1>
-            <span className="description">
-              para editar o eliminar un estudio, primero deberás seleccionar la fila correspondiente en la tabla haciendo clic en ella...
-            </span>
-            <br /><br />
+            <span className="description">para editar o eliminar un estudio, primero deberás seleccionar la fila correspondiente en la tabla haciendo clic en ella...</span><br /><br />
 
             <table>
               <thead>

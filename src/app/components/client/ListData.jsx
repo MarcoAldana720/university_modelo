@@ -39,10 +39,7 @@ export default function ListData() {
         {datos.length > 0 ? (
           <>
             <h1 className="title">resumen de datos laborales</h1>
-            <span className="description">
-              Para editar o eliminar un dato laboral, primero deberás seleccionar la fila correspondiente en la tabla haciendo clic en ella...
-            </span>
-            <br /><br />
+            <span className="description">Para editar o eliminar un dato laboral, primero deberás seleccionar la fila correspondiente en la tabla haciendo clic en ella...</span><br /><br />
 
             <table>
               <thead>

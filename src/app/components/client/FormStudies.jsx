@@ -92,24 +92,24 @@ export default function FormStudies() {
               <label htmlFor="est_nivel_estudios">nivel de estudios:</label><br />
               <select name="est_nivel_estudios" id="est_nivel_estudios" value={info.est_nivel_estudios} disabled >
                 <option value="">selecciona una opción</option>
-                <option value="doctorado">doctorado</option>
-                <option value="maestria">maestría</option>
-                <option value="licenciatura">licenciatura</option>
+                <option value="Doctorado">doctorado</option>
+                <option value="Maestria">maestría</option>
+                <option value="Licenciatura">licenciatura</option>
               </select>
               <br />
 
               <label htmlFor="est_area_estudio">área:</label><br />
               <select name="est_area_estudio" id="est_area_estudio" value={info.est_area_estudio} disabled >
                 <option value="">selecciona una opción</option>
-                <option value="físico-matemáticas y ciencias de la tierra">I. físico-matemáticas y ciencias de la tierra</option>
-                <option value="biología y química">II. biología y química</option>
-                <option value="medicinas y ciencias de la salud">III. medicinas y ciencias de la salud</option>
-                <option value="ciencias de la conducta y la educación">IV. ciencias de la conducta y la educación</option>
-                <option value="humanidades">V. humanidades</option>
-                <option value="ciencias sociales">VI. ciencias sociales</option>
-                <option value="ciencias de agricultura, agropecuarias, forestales y de ecosistemas">VII. ciencias de agricultura, agropecuarias, forestales y de ecosistemas</option>
-                <option value="ingenieria y desarrollo tecnológico">VIII. ingenieria y desarrollo tecnológico</option>
-                <option value="interdisciplinaria">IX. interdisciplinaria</option>
+                <option value="Físico-matemáticas y ciencias de la tierra">I. físico-matemáticas y ciencias de la tierra</option>
+                <option value="Biología y química">II. biología y química</option>
+                <option value="Medicinas y ciencias de la salud">III. medicinas y ciencias de la salud</option>
+                <option value="Ciencias de la conducta y la educación">IV. ciencias de la conducta y la educación</option>
+                <option value="Humanidades">V. humanidades</option>
+                <option value="Ciencias sociales">VI. ciencias sociales</option>
+                <option value="Ciencias de agricultura, agropecuarias, forestales y de ecosistemas">VII. ciencias de agricultura, agropecuarias, forestales y de ecosistemas</option>
+                <option value="Ingenieria y desarrollo tecnológico">VIII. ingenieria y desarrollo tecnológico</option>
+                <option value="Interdisciplinaria">IX. interdisciplinaria</option>
               </select><br />
 
               <label htmlFor="est_disciplina_estudio">disciplina:</label><br />

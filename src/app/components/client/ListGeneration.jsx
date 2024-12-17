@@ -37,10 +37,7 @@ export default function ListGeneration() {
         {generaciones.length > 0 ? (
           <>
             <h1 className="title">resumen de línea generación</h1>
-            <span className="description">
-              Para asociarse a una línea, primero deberás seleccionar la fila correspondiente en la tabla haciendo clic en ella y luego haz preciona el boton de asociar...
-            </span>
-            <br /><br />
+            <span className="description">Para asociarse a una línea, primero deberás seleccionar la fila correspondiente en la tabla haciendo clic en ella y luego haz preciona el boton de asociar...</span><br /><br />
 
             <table>
               <thead>
@@ -57,7 +54,7 @@ export default function ListGeneration() {
             </table><br />
 
             <div className="container_add">
-              <Link href="/client/line?new=1">
+              <Link href="/client/line">
                 <div className="container_btn">
                   <AddUserIcon width={18} />
                   <span>agregar</span>

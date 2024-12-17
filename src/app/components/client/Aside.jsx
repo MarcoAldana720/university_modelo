@@ -9,6 +9,7 @@ import BookIcon from '../../assets/BookIcon';
 import CloseIcon from '../../assets/CloseIcon';
 import DocumentIcon from '../../assets/DocumentIcon';
 import LinkAside from './LinkAside';
+import ExportInfo from './ExportInfo';
 import { useState } from 'react';
 import './aside.css';
 
@@ -49,6 +50,17 @@ export default function Aside({ isOpen, onClose }) {
             <LinkAside Icon={BookIcon} href="/client/generationline" onClick={onClose}>linea de generación</LinkAside>
             <LinkAside Icon={UserInjured} href="/client/academicproduction" onClick={onClose}>producción académica</LinkAside>
           </div>
+
+          {/*
+          <button className="capitalize w-full flex px-3 rounded-md items-center justify-between gap-2 py-3 transition duration-300 hover:bg-white hover:text-primary group/link">
+            <div className="flex items-center gap-4">
+              <DocumentIcon width={20} className="fill-white group-hover/link:fill-primary inline-block" />
+              <span>documentos</span>
+            </div>
+          </button>
+          */}
+
+          <ExportInfo />
         </nav>
       </aside>
     </>

@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter, useParams, usePathname } from "next/navigation";
+import HelpIcon from "../../assets/HelpIcon";
 
 async function loadData(da_id) {
   try {
@@ -86,66 +87,78 @@ export default function EditData({ show }) {
 
         <div className="form">
           <form onSubmit={handleSubmit}>
-            <label htmlFor="da_nombramiento">Nombramiento:</label><br />
+            <label htmlFor="da_nombramiento">nombramiento *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Tipo de contrato o cargo asignado."><HelpIcon /></span>
+            </label><br />
             <input type="text" name="da_nombramiento" id="da_nombramiento" onChange={handleChange} value={info.da_nombramiento} required /><br />
 
-            <label htmlFor="da_escuela_pertenece">Escuela a la que pertenece:</label><br />
+            <label htmlFor="da_escuela_pertenece">escuela a la que pertenece:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Nombre de la escuela o facultad donde labora."><HelpIcon /></span>
+            </label><br />
             <select name="da_escuela_pertenece" id="da_escuela_pertenece" onChange={handleChange} value={info.da_escuela_pertenece} required >
               <option value="">Selecciona una opción</option>
-              <option value="arquitectura">arquitectura</option>
-              <option value="derecho">derecho</option>
-              <option value="diseno">diseño</option>
-              <option value="humanidades">humanidades</option>
-              <option value="ingenieria">ingeniería</option>
-              <option value="negocios">negocios</option>
-              <option value="salud">salud</option>
+              <option value="Arquitectura">arquitectura</option>
+              <option value="Derecho">derecho</option>
+              <option value="Diseño">diseño</option>
+              <option value="Humanidades">humanidades</option>
+              <option value="Ingenieria">ingeniería</option>
+              <option value="Negocios">negocios</option>
+              <option value="Salud">salud</option>
             </select><br />
 
-            <label htmlFor="da_inicio_contrato">Inicio de contrato:</label><br />
+            <label htmlFor="da_inicio_contrato">inicio de contrato *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Fecha de inicio del contrato laboral."><HelpIcon /></span>
+            </label><br />
             <input type="date" name="da_inicio_contrato" id="da_inicio_contrato" onChange={handleChange} value={formatDateForInput(info.da_inicio_contrato)} required /><br />
 
-            <label htmlFor="da_hrs_contrato">Horas de contrato:</label><br />
+            <label htmlFor="da_hrs_contrato">horas de contrato:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Cantidad de horas."><HelpIcon /></span>
+            </label><br />
             <input type="number" name="da_hrs_contrato" id="da_hrs_contrato" onChange={handleChange} value={info.da_hrs_contrato} required /><br />
 
-            <label htmlFor="da_unidad">Unidad académica de adscripción:</label><br />
+            <label htmlFor="da_unidad">unidad académica de adscripción *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Departamento o unidad académica donde está adscrito."><HelpIcon /></span>
+            </label><br />
             <select name="da_unidad" id="da_unidad" onChange={handleChange} value={info.da_unidad} required >
               <option value="">selecciona una opción</option>
-              <option value="ingeniería arquitectónica">ingeniería arquitectónica</option>
-              <option value="derecho">derecho</option>
-              <option value="relaciones internacionales y alianzas estratégicas">relaciones internacionales y alianzas estratégicas</option>
-              <option value="cultura física y entrenamiento deportivo">cultura física y entrenamiento deportivo</option>
-              <option value="bioconstrucción y diseño sustentable">bioconstrucción y diseño sustentable</option>
-              <option value="diseño interactivo">diseño interactivo</option>
-              <option value="diseño de moda">diseño de moda</option>
-              <option value="diseño e innovación">diseño e innovación</option>
-              <option value="comunicación">comunicación</option>
-              <option value="lengua y literatura modernas">lengua y literatura modernas</option>
+              <option value="Ingeniería arquitectónica">ingeniería arquitectónica</option>
+              <option value="Derecho">derecho</option>
+              <option value="Relaciones internacionales y alianzas estratégicas">relaciones internacionales y alianzas estratégicas</option>
+              <option value="Cultura física y entrenamiento deportivo">cultura física y entrenamiento deportivo</option>
+              <option value="Bioconstrucción y diseño sustentable">bioconstrucción y diseño sustentable</option>
+              <option value="Diseño interactivo">diseño interactivo</option>
+              <option value="Diseño de moda">diseño de moda</option>
+              <option value="Diseño e innovación">diseño e innovación</option>
+              <option value="Comunicación">comunicación</option>
+              <option value="Lengua y literatura modernas">lengua y literatura modernas</option>
               <option value="producción musical">producción musical</option>
-              <option value="ingeniería automotriz">ingeniería automotriz</option>
-              <option value="ingeniería biomédica">ingeniería biomédica</option>
-              <option value="ingeniería industrial logística">ingeniería industrial logística</option>
-              <option value="ingeniería mecatrónica">ingeniería mecatrónica</option>
-              <option value="ingeniería en desarrollo de tecnología y software">ingeniería en desarrollo de tecnología y software</option>
-              <option value="ingeniería en energía y petróleo">ingeniería en energía y petróleo</option>
-              <option value="administración y dirección financiera">administración y dirección financiera</option>
-              <option value="administración y mercadotecnia estratégica">administración y mercadotecnia estratégica</option>
-              <option value="dirección de empresas y negocios internacionales">dirección de empresas y negocios internacionales</option>
-              <option value="cirujano dentista">cirujano dentista</option>
-              <option value="fisioterapia y rehabilitación">fisioterapia y rehabilitación</option>
-              <option value="nutrición">nutrición</option>
-              <option value="psicología">psicología</option>
+              <option value="Ingeniería automotriz">ingeniería automotriz</option>
+              <option value="Ingeniería biomédica">ingeniería biomédica</option>
+              <option value="Ingeniería industrial logística">ingeniería industrial logística</option>
+              <option value="Ingeniería mecatrónica">ingeniería mecatrónica</option>
+              <option value="Ingeniería en desarrollo de tecnología y software">ingeniería en desarrollo de tecnología y software</option>
+              <option value="Ingeniería en energía y petróleo">ingeniería en energía y petróleo</option>
+              <option value="Administración y dirección financiera">administración y dirección financiera</option>
+              <option value="Administración y mercadotecnia estratégica">administración y mercadotecnia estratégica</option>
+              <option value="Dirección de empresas y negocios internacionales">dirección de empresas y negocios internacionales</option>
+              <option value="Cirujano dentista">cirujano dentista</option>
+              <option value="Fisioterapia y rehabilitación">fisioterapia y rehabilitación</option>
+              <option value="Nutrición">nutrición</option>
+              <option value="Psicología">psicología</option>
             </select><br />
 
-            <label htmlFor="da_campus">Campus:</label><br />
+            <label htmlFor="da_campus">campus:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Ubicación específica del campus."><HelpIcon /></span>
+            </label><br />
             <select name="da_campus" id="da_campus" onChange={handleChange} value={info.da_campus} required >
-              <option value="">Selecciona una opción</option>
-              <option value="mérida">Mérida</option>
-              <option value="valladolid">Valladolid</option>
-              <option value="chetumal">Chetumal</option>
+              <option value="">selecciona una opción</option>
+              <option value="Mérida">mérida</option>
+              <option value="Valladolid">valladolid</option>
+              <option value="Chetumal">chetumal</option>
             </select><br />
 
             <div className="btn">
-              <button type="submit">Guardar</button>
+              <button type="submit">guardar</button>
             </div>
           </form>
         </div>

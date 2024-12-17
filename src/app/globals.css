@@ -654,6 +654,59 @@ body {
   font-size: 14px;
 }
 
+/* Estilo para el ícono */
+.tooltip-icon {
+  cursor: pointer;
+  position: relative;
+}
+
+.tooltip-icon::after {
+  content: attr(data-tooltip);
+  visibility: hidden;
+  opacity: 0;
+  width: 150px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #FFF;
+  text-align: center;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  /* bottom: 120%; */
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease-in-out;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+.tooltip-icon::before {
+  content: "";
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.tooltip-icon:hover::after,
+.tooltip-icon:hover::before {
+  visibility: visible;
+  opacity: 1;
+}
+
+.highlight-icon svg {
+  fill: #061F57;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
 /* ----------------------------------- */
 /*           STYLE THE MOVIL           */
 @media screen and (max-width: 767px) {
@@ -778,13 +831,6 @@ body {
     display: none;
   }
 }
-
-
-
-
-
-
-
 
 /* Lado del cliente tabla vertical */
 .table-container {

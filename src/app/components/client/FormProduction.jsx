@@ -63,22 +63,22 @@ export default function FormProduction() {
       });
 
       if (response.status === 204) {
-        toast.success("Producto eliminado exitosamente.");
+        toast.success("Producto Eliminado Exitosamente.");
         router.push("/client/academicproduction");
       } else if (response.status === 404) {
-        toast.error("Producción académica no encontrada o no autorizada.");
+        toast.error("Producción Académica No Encontrada O No Autorizada.");
       } else if (response.status === 401) {
-        toast.error("No autorizado.");
+        toast.error("No Autorizado.");
       } else {
-        toast.error("Error al eliminar el producto.");
+        toast.error("Error Al eliminar El Producto.");
       }
     } catch (error) {
-      console.error("Error al eliminar:", error);
+      console.error("Error Al Eliminar:", error);
       if (error.response) {
         // Muestra un mensaje de error basado en la respuesta del servidor
-        toast.error(error.response.data.message || "Error desconocido.");
+        toast.error(error.response.data.message || "Error Desconocido.");
       } else {
-        toast.error("Error en el servidor.");
+        toast.error("Error En El Servidor.");
       }
     }
   };
@@ -135,8 +135,8 @@ export default function FormProduction() {
                   <label htmlFor="lib_estado_actual">estado actual del libro:</label><br />
                   <select name="lib_estado_actual" id="lib_estado_actual" value={info.lib_estado_actual} disabled>
                     <option value="">selecciona una opción</option>
-                    <option value="aceptado">aceptado</option>
-                    <option value="publicado">publicado</option>
+                    <option value="Aceptado">aceptado</option>
+                    <option value="Publicado">publicado</option>
                   </select><br />
 
                   <label htmlFor="lib_pagina">páginas (libro):</label><br />
@@ -165,9 +165,9 @@ export default function FormProduction() {
                   <label htmlFor="art_tipo_articulo">tipo de artículo:</label><br />
                   <select name="art_tipo_articulo" id="art_tipo_articulo" value={info.art_tipo_articulo} disabled >
                     <option value="">selecciona una opción</option>
-                    <option value="artículo de difusión y divulgación">artículo de difusión y divulgación</option>
-                    <option value="artículo de arbitrado">artículo de arbitrado</option>
-                    <option value="artículo en revista indexada">artículo en revista indexada</option>
+                    <option value="Artículo de difusión y divulgación">artículo de difusión y divulgación</option>
+                    <option value="Artículo de arbitrado">artículo de arbitrado</option>
+                    <option value="Artículo en revista indexada">artículo en revista indexada</option>
                   </select><br />
 
                   <label htmlFor="art_titulo_articulo">título del artículo:</label><br />
@@ -193,8 +193,8 @@ export default function FormProduction() {
                   <label htmlFor="lib_tipo_libro">tipo de libro:</label><br />
                   <select name="lib_tipo_libro" id="lib_tipo_libro" value={info.lib_tipo_libro} disabled >
                     <option value="">selecciona una opción</option>
-                    <option value="capítulo de libro">capítulo de libro</option>
-                    <option value="libro">libro</option>
+                    <option value="Capítulo de libro">capítulo de libro</option>
+                    <option value="Libro">libro</option>
                   </select><br />
 
                   <label htmlFor="lib_tipo_participacion">tipo de participación (libro):</label><br />

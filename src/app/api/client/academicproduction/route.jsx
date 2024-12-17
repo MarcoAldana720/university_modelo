@@ -53,15 +53,15 @@ export async function GET() {
     `, [loggedInUser]);
 
     // Verificar si se encontraron resultados
-    if (results.length === 0) {
-      return NextResponse.json(
-        {
-          message: 'No articles or books found for the user'
-        }, {
-          status: 404
-        }
-      );
-    }
+    // if (results.length === 0) {
+    //   return NextResponse.json(
+    //     {
+    //       message: 'No articles or books found for the user'
+    //     }, {
+    //       status: 404
+    //     }
+    //   );
+    // }
 
     // console.log(results);
 
@@ -87,7 +87,7 @@ export async function POST(req) {
 
     if (!token) {
       return NextResponse.json(
-        { message: 'No se proporcionó token.' },
+        { message: 'No Se Proporcionó Token.' },
         { status: 401 }
       );
     }
@@ -99,7 +99,7 @@ export async function POST(req) {
 
     if (!detalles || !detalles.autores || !detalles.estado_actual || !detalles.pais) {
       return NextResponse.json(
-        { message: 'Faltan detalles requeridos para la producción.' },
+        { message: 'Faltan Detalles Requeridos Para La Producción.' },
         { status: 400 }
       );
     }
@@ -180,7 +180,7 @@ export async function POST(req) {
       nuevoProductoId = resultLibro.insertId;
     } else {
       return NextResponse.json(
-        { message: 'Tipo de producción inválido.' },
+        { message: 'Tipo De Producción Inválido.' },
         { status: 400 }
       );
     }
@@ -199,7 +199,7 @@ export async function POST(req) {
     );
 
     return NextResponse.json({
-      message: 'Nuevo producto agregado exitosamente.',
+      message: 'Nuevo Producto Agregado Exitosamente.',
       productId: nuevoProductoId,
     });
   } catch (error) {

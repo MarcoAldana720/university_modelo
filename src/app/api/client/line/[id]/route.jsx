@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
 // FUNCION PARA OBTENER INFORMACION DE LA LINEA DE GENERACIÓN DEL USUARIO QUE HA INICIADO SESION
 export async function GET(request, { params }) {
   try {
@@ -62,103 +66,72 @@ export async function GET(request, { params }) {
   }
 }
 
-
-
-
-
-// NO FUNCIONA COMO YO ESPERO
-// FUNCTION PARA EDITAR LA LINEA DE GENERACIÓN QUE HA SELECCIONADO DEL USUARIO QUE HA INICIADO SESION
-export async function POST(req) {
+// FUNCTION PARA ASOCIAR A UNA LINEA QUE HA SELECCIONADO DEL USUARIO QUE HA INICIADO SESION
+export async function POST(req, { params }) {
   try {
-    // Obtener el token desde las cookies
-    const cookieStore = cookies();
-    const token = cookieStore.get('myTokenName')?.value;
+    const { id } = params; // ID de la línea seleccionada
+    const { lg_actividad_realiza } = await req.json();
 
-    // Verificar si el token existe
+    // Obtener el token del usuario autenticado
+    const cookieStore = cookies();
+    const token = cookieStore.get("myTokenName")?.value;
+
     if (!token) {
       return NextResponse.json(
         {
-          message: 'No Token Provided'
+          message: "No autorizado"
         }, {
           status: 401
         }
       );
     }
 
-    // Decodificar el token JWT para obtener el ID del usuario
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Asegúrate de tener el JWT_SECRET correctamente configurado
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const loggedInUser = decoded.id; // ID del usuario autenticado
 
-    const lg_id_profesor = decoded.id; // Obtener el id del profesor desde el token
+    // Verificar si el usuario ya está asociado a la línea seleccionada
+    const results = await conn.query(
+      `
+        SELECT 1
+        FROM linea_generacion
+        WHERE lg_id_linea = ? AND lg_id_profesor = ?
+        LIMIT 1
+      `,
+      [id, loggedInUser]
+    );
 
-    // Obtener los datos del cuerpo de la solicitud
-    const { li_linea, lg_actividad_realiza } = await req.json();
-
-    // Validación de los datos
-    if (!li_linea || !lg_actividad_realiza) {
+    // Si ya existe una asociación para este usuario y esta línea, detener la ejecución
+    if (results.length > 0) {
       return NextResponse.json(
         {
-          message: 'Falta Campos Obligatorios.'
+          message: "Ya Estás Asociado A Esta Línea."
         }, {
           status: 400
         }
       );
     }
 
-    // Verificar si la línea existe en la tabla
-    const [existingLine] = await conn.query(
-      `SELECT li_linea FROM linea WHERE li_linea = ?`,
-      [li_linea]
-    );
-
-    if (!existingLine) {
-      return NextResponse.json(
-        {
-          message: `La Linea No Existe.`
-        }, {
-          status: 404 // Código de estado para no encontrado
-        }
-      );
-    }
-
-    // Verificar si ya existe una asignación de actividad a esta línea para el mismo profesor
-    const [existingAssociation] = await conn.query(
-      `SELECT * FROM linea_generacion WHERE lg_id_linea = ? AND lg_id_profesor = ?`,
-      [existingLine.li_linea, lg_id_profesor]
-    );
-
-    if (existingAssociation) {
-      return NextResponse.json(
-        {
-          message: `Ya está asociado a esta línea con una actividad.`
-        }, {
-          status: 409 // Código de estado para conflicto
-        }
-      );
-    }
-
-    // Insertar la asociación de la actividad en la tabla `linea_generacion`
-    const resultLineaGeneracion = await conn.query(
+    // Insertar la nueva actividad si no hay asociación previa para este usuario y esta línea
+    await conn.query(
       `
-      INSERT INTO linea_generacion (lg_id_linea, lg_actividad_realiza, lg_id_profesor)
-      VALUES (?, ?, ?)
+        INSERT INTO linea_generacion (lg_id_linea, lg_actividad_realiza, lg_id_profesor)
+        VALUES (?, ?, ?)
       `,
-      [existingLine.li_linea, lg_actividad_realiza, lg_id_profesor]
+      [id, lg_actividad_realiza, loggedInUser]
     );
 
-    // Verificar si la inserción fue exitosa
-    if (resultLineaGeneracion?.affectedRows === 1) {
-      return NextResponse.json(
-        {
-          message: "Asociación de Actividad a Línea Exitosa."
-        }
-      );
-    } else {
-      throw new Error("No Se Pudo Asociar La Actividad a La Línea.");
-    }
-  } catch (error) {
     return NextResponse.json(
       {
-        message: error.message
+        message: "Actividad Asociada Exitosamente."
+      }, {
+        status: 201
+      }
+    );
+  } catch (error) {
+    console.error("Error En El Backend:", error);
+    return NextResponse.json(
+      {
+        message: "Error Al Asociar La Actividad.", error: error.message
       }, {
         status: 500
       }

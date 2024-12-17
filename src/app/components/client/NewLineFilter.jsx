@@ -4,6 +4,7 @@ import axios from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
 import Modal from './Modal';
 import { toast } from 'sonner';
+import HelpIcon from "../../assets/HelpIcon";
 
 export default function NewStudies({show}) {
   const pathname = usePathname();
@@ -43,10 +44,14 @@ export default function NewStudies({show}) {
 
         <div className="form">
           <form onSubmit={handleSubmit} method="post">
-            <label htmlFor="li_linea">linea:</label><br />
+            <label htmlFor="li_linea">linea *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Tema o área de investigación."><HelpIcon /></span>
+            </label><br />
             <input type="text" name="li_linea" id="li_linea" required /><br />
 
-            <label htmlFor="lg_actividad_realiza">actividad que realiza:</label><br />
+            <label htmlFor="lg_actividad_realiza">actividad que realiza *:
+              <span className="tooltip-icon highlight-icon" data-tooltip="Tipo de trabajo dentro de la línea de investigación."><HelpIcon /></span>
+            </label><br />
             <input type="text" name="lg_actividad_realiza" id="lg_actividad_realiza" required /><br />
 
             <div className="btn">
